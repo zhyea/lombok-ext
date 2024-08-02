@@ -15,7 +15,6 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -37,14 +36,6 @@ public class ToJsonStringProcessor extends AbstractProcessor {
         this.trees = JavacTrees.instance(context);
         this.treeMaker = TreeMaker.instance(context);
         this.names = Names.instance(context);
-    }
-
-
-    @Override
-    public Set<String> getSupportedAnnotationTypes() {
-        Set<String> result = new HashSet<>(1);
-        result.add(ToJsonString.class.getCanonicalName());
-        return result;
     }
 
 
