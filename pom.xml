@@ -6,7 +6,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.chobit.core</groupId>
+    <groupId>orgt.chobit.apt</groupId>
     <artifactId>lombok-ext</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -31,11 +31,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>2.0.9</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.auto.service</groupId>
-            <artifactId>auto-service</artifactId>
-            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>com.sun</groupId>

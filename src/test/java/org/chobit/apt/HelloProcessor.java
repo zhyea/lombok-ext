@@ -1,4 +1,4 @@
-package org.chobit.core;
+package org.chobit.apt;
 
 
 import com.sun.source.util.Trees;
@@ -35,7 +35,6 @@ import static com.sun.tools.javac.tree.JCTree.JCNewClass;
 import static com.sun.tools.javac.tree.JCTree.JCStatement;
 import static com.sun.tools.javac.tree.JCTree.JCTypeParameter;
 import static com.sun.tools.javac.tree.JCTree.JCVariableDecl;
-import static com.sun.tools.javac.util.Name.Table;
 import static javax.lang.model.SourceVersion.RELEASE_6;
 
 /**
