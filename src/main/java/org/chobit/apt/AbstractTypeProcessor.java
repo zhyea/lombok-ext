@@ -6,6 +6,8 @@ import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.Context;
+import com.sun.tools.javac.util.List;
+import com.sun.tools.javac.util.Name;
 import com.sun.tools.javac.util.Names;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -15,89 +17,107 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
+
+/**
+ * @author robin
+ */
 public abstract class AbstractTypeProcessor extends AbstractProcessor {
 
 
-    private Trees trees;
-    private TreeMaker treeMaker;
-    private Names names;
-    private Messager messager;
+	private Trees trees;
+	private TreeMaker treeMaker;
+	private Names names;
+	private Messager messager;
 
 
-    @Override
-    public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.latestSupported();
-    }
+	@Override
+	public SourceVersion getSupportedSourceVersion() {
+		return SourceVersion.latestSupported();
+	}
 
 
-    @Override
-    public synchronized void init(ProcessingEnvironment processingEnv) {
+	@Override
+	public synchronized void init(ProcessingEnvironment processingEnv) {
 
-        this.messager = processingEnv.getMessager();
+		this.messager = processingEnv.getMessager();
 
-        if (processingEnv instanceof JavacProcessingEnvironment) {
+		if (processingEnv instanceof JavacProcessingEnvironment) {
 
-            Context context = ((JavacProcessingEnvironment) processingEnv).getContext();
+			Context context = ((JavacProcessingEnvironment) processingEnv).getContext();
 
-            this.trees = JavacTrees.instance(context);
-            this.treeMaker = TreeMaker.instance(context);
-            this.names = Names.instance(context);
+			this.trees = JavacTrees.instance(context);
+			this.treeMaker = TreeMaker.instance(context);
+			this.names = Names.instance(context);
 
-            super.init(processingEnv);
-        } else {
-            messager.printMessage(Diagnostic.Kind.WARNING, "@ToJsonString is not supported.");
-        }
-    }
-
-
-    /**
-     * 填充import内容
-     */
-    protected void makeImport(TypeElement typeElement, Class<?> clazz) {
-        JCTree.JCCompilationUnit compilationUnit = (JCTree.JCCompilationUnit) trees.getPath(typeElement).getCompilationUnit();
-        JCTree.JCExpression importExp = getClassExpression(clazz.getName());
-        JCTree.JCImport importVal = getTreeMaker().Import(importExp, false);
-        compilationUnit.defs.append(importVal);
-    }
+			super.init(processingEnv);
+		} else {
+			messager.printMessage(Diagnostic.Kind.WARNING, "@ToJsonString is not supported.");
+		}
+	}
 
 
-    /**
-     * 获取方法表达式
-     */
-    protected JCTree.JCExpression getMethodExpression(String className, String methodName) {
-        JCTree.JCExpression ident = getClassExpression(className);
-        return treeMaker.Select(ident, names.fromString(methodName));
-    }
+	/**
+	 * 构造注解
+	 */
+	protected JCTree.JCAnnotation makeAnnotation(Class<?> annotationClass) {
+		JCTree.JCExpression annoExp = getClassExpression(annotationClass.getName());
+		return treeMaker.Annotation(annoExp, List.nil());
+	}
 
 
-    /**
-     * 获取类表达式
-     */
-    protected JCTree.JCExpression getClassExpression(String className) {
-        String[] arr = className.split("\\.");
-        JCTree.JCExpression ident = treeMaker.Ident(names.fromString(arr[0]));
-
-        for (int i = 1; i < arr.length; i++) {
-            ident = treeMaker.Select(ident, names.fromString(arr[i]));
-        }
-
-        return ident;
-    }
+	/**
+	 * 填充import内容
+	 */
+	protected void makeImport(TypeElement typeElement, Class<?> clazz) {
+		JCTree.JCCompilationUnit compilationUnit = (JCTree.JCCompilationUnit) trees.getPath(typeElement).getCompilationUnit();
+		JCTree.JCExpression importExp = getClassExpression(clazz.getName());
+		JCTree.JCImport importVal = getTreeMaker().Import(importExp, false);
+		compilationUnit.defs.append(importVal);
+	}
 
 
-    public Trees getTrees() {
-        return trees;
-    }
+	/**
+	 * 获取方法表达式
+	 */
+	protected JCTree.JCExpression getMethodExpression(String className, String methodName) {
+		JCTree.JCExpression ident = getClassExpression(className);
+		return treeMaker.Select(ident, names.fromString(methodName));
+	}
 
-    public TreeMaker getTreeMaker() {
-        return treeMaker;
-    }
 
-    public Names getNames() {
-        return names;
-    }
+	/**
+	 * 获取类表达式
+	 */
+	protected JCTree.JCExpression getClassExpression(String className) {
+		String[] arr = className.split("\\.");
+		JCTree.JCExpression ident = treeMaker.Ident(names.fromString(arr[0]));
 
-    public Messager getMessager() {
-        return messager;
-    }
+		for (int i = 1; i < arr.length; i++) {
+			ident = treeMaker.Select(ident, names.fromString(arr[i]));
+		}
+
+		return ident;
+	}
+
+
+	/**
+	 * 获取Name
+	 */
+	protected Name getName(String str) {
+		return names.fromString(str);
+	}
+
+
+	public Trees getTrees() {
+		return trees;
+	}
+
+	public TreeMaker getTreeMaker() {
+		return treeMaker;
+	}
+
+
+	public Messager getMessager() {
+		return messager;
+	}
 }
