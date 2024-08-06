@@ -6,6 +6,12 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.chobit</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>0.1.1</version>
+    </parent>
+
     <groupId>orgt.chobit.apt</groupId>
     <artifactId>lombok-ext</artifactId>
     <version>0.0.1</version>
