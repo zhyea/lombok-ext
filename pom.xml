@@ -12,7 +12,7 @@
         <version>0.1.1</version>
     </parent>
 
-    <groupId>orgt.chobit.apt</groupId>
+    <groupId>org.chobit.apt</groupId>
     <artifactId>lombok-ext</artifactId>
     <version>0.0.1</version>
     <packaging>jar</packaging>
