@@ -14,73 +14,75 @@ import java.util.Set;
 
 
 /**
+ * {@code @ToJsonString}注解处理
+ *
  * @author robin
  */
 public class ToJsonStringProcessor extends AbstractTypeProcessor {
 
 
-	@Override
-	public Set<String> getSupportedAnnotationTypes() {
-		Set<String> annoTypes = new HashSet<>(1);
-		annoTypes.add(ToJsonString.class.getCanonicalName());
-		return annoTypes;
-	}
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+        Set<String> annoTypes = new HashSet<>(1);
+        annoTypes.add(ToJsonString.class.getCanonicalName());
+        return annoTypes;
+    }
 
 
-	@Override
-	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+    @Override
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
-		if (!isInitialized()) {
-			return true;
-		}
+        if (!isInitialized()) {
+            return true;
+        }
 
-		Set<TypeElement> typeElements = ElementFilter.typesIn(roundEnv.getElementsAnnotatedWith(ToJsonString.class));
-		if (typeElements.isEmpty()) {
-			return true;
-		}
+        Set<TypeElement> typeElements = ElementFilter.typesIn(roundEnv.getElementsAnnotatedWith(ToJsonString.class));
+        if (typeElements.isEmpty()) {
+            return true;
+        }
 
-		for (TypeElement ele : typeElements) {
-			this.makeToStringMethod(ele);
-		}
+        for (TypeElement ele : typeElements) {
+            this.makeToStringMethod(ele);
+        }
 
-		return true;
-	}
-
-
-	private void makeToStringMethod(TypeElement typeElement) {
-		makeImport(typeElement, JsonStringSerializer.class);
-
-		JCTree.JCModifiers modifiers = getTreeMaker().Modifiers(Flags.PUBLIC, List.nil());
-		JCTree.JCExpression returnType = getClassExpression(String.class.getName());
-
-		List<JCTree.JCVariableDecl> parameters = List.nil();
-		List<JCTree.JCTypeParameter> generics = List.nil();
-		Name methodName = getName("toString");
-		List<JCTree.JCExpression> exceptThrows = List.nil();
-
-		JCTree.JCBlock methodBody = makeToStringBody();
-
-		JCTree.JCMethodDecl methodDecl =
-				getTreeMaker().MethodDef(modifiers, methodName, returnType, generics, parameters, exceptThrows,
-						methodBody, null);
-
-		JCTree.JCClassDecl classDecl = (JCTree.JCClassDecl) getTrees().getTree(typeElement);
-
-		classDecl.defs.append(methodDecl);
-	}
+        return true;
+    }
 
 
-	private JCTree.JCBlock makeToStringBody() {
-		JCTree.JCExpression serializerIdent = getMethodExpression(JsonStringSerializer.class.getName(), "toJson");
-		List<JCTree.JCExpression> toJsonArgs = List.from(List.of(getTreeMaker().Ident(getName("this"))));
+    private void makeToStringMethod(TypeElement typeElement) {
+        makeImport(typeElement, JsonStringSerializer.class);
+
+        JCTree.JCModifiers modifiers = getTreeMaker().Modifiers(Flags.PUBLIC, List.nil());
+        JCTree.JCExpression returnType = getClassExpression(String.class.getName());
+
+        List<JCTree.JCVariableDecl> parameters = List.nil();
+        List<JCTree.JCTypeParameter> generics = List.nil();
+        Name methodName = getName("toString");
+        List<JCTree.JCExpression> exceptThrows = List.nil();
+
+        JCTree.JCBlock methodBody = makeToStringBody();
+
+        JCTree.JCMethodDecl methodDecl =
+                getTreeMaker().MethodDef(modifiers, methodName, returnType, generics, parameters, exceptThrows,
+                        methodBody, null);
+
+        JCTree.JCClassDecl classDecl = (JCTree.JCClassDecl) getTrees().getTree(typeElement);
+
+        classDecl.defs.append(methodDecl);
+    }
 
 
-		JCTree.JCReturn returnStatement = getTreeMaker().Return(
-				getTreeMaker().Apply(List.nil(), serializerIdent, toJsonArgs)
-		);
+    private JCTree.JCBlock makeToStringBody() {
+        JCTree.JCExpression serializerIdent = getMethodExpression(JsonStringSerializer.class.getName(), "toJson");
+        List<JCTree.JCExpression> toJsonArgs = List.from(List.of(getTreeMaker().Ident(getName("this"))));
 
-		return getTreeMaker().Block(0, List.of(returnStatement));
-	}
+
+        JCTree.JCReturn returnStatement = getTreeMaker().Return(
+                getTreeMaker().Apply(List.nil(), serializerIdent, toJsonArgs)
+        );
+
+        return getTreeMaker().Block(0, List.of(returnStatement));
+    }
 
 
 }

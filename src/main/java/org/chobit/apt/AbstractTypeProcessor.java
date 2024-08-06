@@ -19,6 +19,8 @@ import javax.tools.Diagnostic;
 
 
 /**
+ * {@link javax.annotation.processing.AbstractProcessor} 的一个抽象子类，实现了一些通用的内容
+ *
  * @author robin
  */
 public abstract class AbstractTypeProcessor extends AbstractProcessor {
