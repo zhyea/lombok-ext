@@ -8,3 +8,5 @@
 * [自定义插入式注解处理器](https://www.cnblogs.com/jmcui/p/12159541.html)
 * [Annotation Processing 101](http://hannesdorfmann.com/annotation-processing/annotationprocessing101/)
 * [Hello Processor](https://gist.github.com/pietrocaselani/8624554)
+
+checker-framework的TreeUtils有很多可以借鉴的地方

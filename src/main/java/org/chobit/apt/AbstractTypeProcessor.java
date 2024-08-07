@@ -26,132 +26,132 @@ import javax.tools.Diagnostic;
 public abstract class AbstractTypeProcessor extends AbstractProcessor {
 
 
-    private Trees trees;
-    private TreeMaker treeMaker;
-    private Names names;
-    private Messager messager;
+	private Trees trees;
+	private TreeMaker treeMaker;
+	private Names names;
+	private Messager messager;
 
 
-    @Override
-    public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.latestSupported();
-    }
+	@Override
+	public SourceVersion getSupportedSourceVersion() {
+		return SourceVersion.latestSupported();
+	}
 
 
-    @Override
-    public synchronized void init(ProcessingEnvironment processingEnv) {
+	@Override
+	public synchronized void init(ProcessingEnvironment processingEnv) {
 
-        this.messager = processingEnv.getMessager();
+		this.messager = processingEnv.getMessager();
 
-        if (processingEnv instanceof JavacProcessingEnvironment) {
+		if (processingEnv instanceof JavacProcessingEnvironment) {
 
-            Context context = ((JavacProcessingEnvironment) processingEnv).getContext();
+			Context context = ((JavacProcessingEnvironment) processingEnv).getContext();
 
-            this.trees = JavacTrees.instance(context);
-            this.treeMaker = TreeMaker.instance(context);
-            this.names = Names.instance(context);
+			this.trees = JavacTrees.instance(context);
+			this.treeMaker = TreeMaker.instance(context);
+			this.names = Names.instance(context);
 
-            super.init(processingEnv);
-        } else {
-            messager.printMessage(Diagnostic.Kind.WARNING, "@ToJsonString is not supported.");
-        }
-    }
-
-
-    /**
-     * 构造注解
-     *
-     * @param annotationClass 注解类
-     * @return 注解信息
-     */
-    protected JCTree.JCAnnotation makeAnnotation(Class<?> annotationClass) {
-        JCTree.JCExpression annoExp = getClassExpression(annotationClass.getName());
-        return treeMaker.Annotation(annoExp, List.nil());
-    }
+			super.init(processingEnv);
+		} else {
+			messager.printMessage(Diagnostic.Kind.WARNING, "lombok-ext is not supported.");
+		}
+	}
 
 
-    /**
-     * 填充import内容
-     *
-     * @param typeElement 类Element
-     * @param clazz       要import的类
-     */
-    protected void makeImport(TypeElement typeElement, Class<?> clazz) {
-        JCTree.JCCompilationUnit compilationUnit = (JCTree.JCCompilationUnit) trees.getPath(typeElement).getCompilationUnit();
-        JCTree.JCExpression importExp = getClassExpression(clazz.getName());
-        JCTree.JCImport importVal = getTreeMaker().Import(importExp, false);
-        compilationUnit.defs.append(importVal);
-    }
+	/**
+	 * 构造注解
+	 *
+	 * @param annotationClass 注解类
+	 * @return 注解信息
+	 */
+	protected JCTree.JCAnnotation makeAnnotation(Class<?> annotationClass) {
+		JCTree.JCExpression annoExp = getClassExpression(annotationClass.getName());
+		return treeMaker.Annotation(annoExp, List.nil());
+	}
 
 
-    /**
-     * 获取方法对应的Expression
-     *
-     * @param className  类名称
-     * @param methodName 方法名称
-     * @return 方法对应的Expression
-     */
-    protected JCTree.JCExpression getMethodExpression(String className, String methodName) {
-        JCTree.JCExpression ident = getClassExpression(className);
-        return treeMaker.Select(ident, names.fromString(methodName));
-    }
+	/**
+	 * 填充import内容
+	 *
+	 * @param typeElement 类Element
+	 * @param clazz       要import的类
+	 */
+	protected void makeImport(TypeElement typeElement, Class<?> clazz) {
+		JCTree.JCCompilationUnit compilationUnit = (JCTree.JCCompilationUnit) trees.getPath(typeElement).getCompilationUnit();
+		JCTree.JCExpression importExp = getClassExpression(clazz.getName());
+		JCTree.JCImport importVal = getTreeMaker().Import(importExp, false);
+		compilationUnit.defs.append(importVal);
+	}
 
 
-    /**
-     * 获取类表达式
-     *
-     * @param className 类名称
-     * @return 类对应的表达式
-     */
-    protected JCTree.JCExpression getClassExpression(String className) {
-        String[] arr = className.split("\\.");
-        JCTree.JCExpression ident = treeMaker.Ident(names.fromString(arr[0]));
-
-        for (int i = 1; i < arr.length; i++) {
-            ident = treeMaker.Select(ident, names.fromString(arr[i]));
-        }
-
-        return ident;
-    }
+	/**
+	 * 获取方法对应的Expression
+	 *
+	 * @param className  类名称
+	 * @param methodName 方法名称
+	 * @return 方法对应的Expression
+	 */
+	protected JCTree.JCExpression getMethodExpression(String className, String methodName) {
+		JCTree.JCExpression ident = getClassExpression(className);
+		return treeMaker.Select(ident, names.fromString(methodName));
+	}
 
 
-    /**
-     * 获取Name
-     *
-     * @param str 字符串
-     * @return Name
-     */
-    protected Name getName(String str) {
-        return names.fromString(str);
-    }
+	/**
+	 * 获取类表达式
+	 *
+	 * @param className 类名称
+	 * @return 类对应的表达式
+	 */
+	protected JCTree.JCExpression getClassExpression(String className) {
+		String[] arr = className.split("\\.");
+		JCTree.JCExpression ident = treeMaker.Ident(names.fromString(arr[0]));
+
+		for (int i = 1; i < arr.length; i++) {
+			ident = treeMaker.Select(ident, names.fromString(arr[i]));
+		}
+
+		return ident;
+	}
 
 
-    /**
-     * 获取Trees
-     *
-     * @return Trees
-     */
-    public Trees getTrees() {
-        return trees;
-    }
+	/**
+	 * 获取Name
+	 *
+	 * @param str 字符串
+	 * @return Name
+	 */
+	protected Name getName(String str) {
+		return names.fromString(str);
+	}
 
 
-    /**
-     * 获取TreeMaker
-     *
-     * @return TreeMaker
-     */
-    public TreeMaker getTreeMaker() {
-        return treeMaker;
-    }
+	/**
+	 * 获取Trees
+	 *
+	 * @return Trees
+	 */
+	public Trees getTrees() {
+		return trees;
+	}
 
 
-    /**
-     * 获取Messenger
-     *
-     * @return Messenger
-     */
-    public Messager getMessager() {
-        return messager;
-    }
+	/**
+	 * 获取TreeMaker
+	 *
+	 * @return TreeMaker
+	 */
+	public TreeMaker getTreeMaker() {
+		return treeMaker;
+	}
+
+
+	/**
+	 * 获取Messenger
+	 *
+	 * @return Messenger
+	 */
+	public Messager getMessager() {
+		return messager;
+	}
 }
