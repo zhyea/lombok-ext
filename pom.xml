@@ -14,7 +14,7 @@
 
     <groupId>org.chobit.apt</groupId>
     <artifactId>lombok-ext</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
