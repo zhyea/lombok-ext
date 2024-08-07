@@ -1,10 +1,9 @@
-**参考文档：**
+# Lombok-ext
 
-* [插入式注解处理器](https://www.cnblogs.com/duanxz/p/13360361.html)
-* [Java中的屠龙之术](https://blog.csdn.net/u011277745/article/details/132304231)
-* [AbstractProcessor相关的API记录](https://blog.csdn.net/tianyaleixiaowu/article/details/128410609)
-* [Java 中的屠龙之术：如何修改语法树？](https://blog.csdn.net/a724888/article/details/121511846)
-* [Java注解编译期处理AbstractProcessor详解](https://zhuanlan.zhihu.com/p/625759003)
-* [自定义插入式注解处理器](https://www.cnblogs.com/jmcui/p/12159541.html)
-* [Annotation Processing 101](http://hannesdorfmann.com/annotation-processing/annotationprocessing101/)
-* [Hello Processor](https://gist.github.com/pietrocaselani/8624554)
+
+主要用来维护一些生成式注解，算是对lombok的一个补充或扩展吧。
+
+## @ToJsonString
+
+使用`@ToJsonString` 可以重写`toString()`方法。并将当前对象以json字符串的形式返回。  
+底层依赖的是**jackson**，可以使用jackson各种注解对对象进行各种处理。
