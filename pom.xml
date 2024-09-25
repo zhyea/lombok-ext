@@ -45,9 +45,7 @@
         <dependency>
             <groupId>com.sun</groupId>
             <artifactId>tools</artifactId>
-            <version>1.8</version>
-            <scope>system</scope>
-            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+            <version>1.8.0</version>
         </dependency>
     </dependencies>
 
@@ -65,7 +63,36 @@
                     <proc>none</proc>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <minimizeJar>true</minimizeJar>
+                    <relocations>
+                        <relocation>
+                            <pattern>sun.tools</pattern>
+                            <shadedPattern>org.chobit.shaded.sun.tools</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <scm>
+        <connection>scm:git:git@github.com:zhyea/lombok-ext.git</connection>
+        <developerConnection>scm:git:git@github.com:zhyea/lombok-ext.git</developerConnection>
+        <url>https://github.com/zhyea/lombok-ext</url>
+        <tag>lombok-ext</tag>
+    </scm>
 
 </project>

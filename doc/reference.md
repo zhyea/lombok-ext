@@ -10,3 +10,10 @@
 * [Hello Processor](https://gist.github.com/pietrocaselani/8624554)
 
 checker-framework的TreeUtils有很多可以借鉴的地方
+
+
+install sun tools.jar into local repository:
+
+```shell
+mvn install:install-file -Dfile='${java.home}/../lib/tools.jar' -DgroupId='com.sun' -DartifactId=tools -Dversion='1.8.0' -Dpackaging=jar
+```
